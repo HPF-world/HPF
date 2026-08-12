@@ -228,7 +228,7 @@ section { padding: 5.5rem 0; }
 }
 
 .logo-link { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
-.logo-image { height: 40px; width: auto; border-radius: 8px; }
+.logo-image { height: 50px; width: auto; border-radius: 8px; }
 .logo-wordmark { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: var(--text-1); }
 .logo-wordmark span { color: var(--primary); }
 
