@@ -195,3 +195,82 @@ function debounce(func, wait) {
         timeoutId = setTimeout(() => func(...args), wait);
     };
 }
+
+/* Social sidebar keyboard navigation & reduced-motion handling */
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.querySelector('.social-sidebar');
+    if (!sidebar) return;
+
+    const links = Array.from(sidebar.querySelectorAll('.social-link'));
+    if (!links.length) return;
+
+    sidebar.addEventListener('keydown', (e) => {
+        const active = document.activeElement;
+        const idx = links.indexOf(active);
+        if (idx === -1) return;
+
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            links[(idx + 1) % links.length].focus();
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            links[(idx - 1 + links.length) % links.length].focus();
+        }
+    });
+
+    // Make sure icons are focusable and announce themselves
+    links.forEach(link => {
+        link.setAttribute('tabindex', '0');
+        // Add an accessible tooltip for screen readers
+        if (!link.getAttribute('title')) {
+            const label = link.getAttribute('aria-label') || 'social link';
+            link.setAttribute('title', label);
+        }
+    });
+
+    // Respect reduced motion
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) links.forEach(l => l.style.transition = 'none');
+});
+
+// Floating scroll-down button behavior
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollBtn = document.getElementById('scrollDownBtn');
+    if (!scrollBtn) return;
+
+    let lastScroll = window.scrollY;
+
+    const showOnScroll = () => {
+        const threshold = 120; // px scrolled from top before showing
+        if (window.scrollY > threshold) {
+            scrollBtn.classList.add('visible');
+        } else {
+            scrollBtn.classList.remove('visible');
+        }
+        lastScroll = window.scrollY;
+    };
+
+    // initial check
+    showOnScroll();
+
+    window.addEventListener('scroll', debounce(showOnScroll, 80), { passive: true });
+
+    // On click, animate ripple and scroll one viewport down (or to next section)
+    scrollBtn.addEventListener('click', (e) => {
+        // ripple class toggles the ::after animation
+        scrollBtn.classList.add('ripple');
+        setTimeout(() => scrollBtn.classList.remove('ripple'), 520);
+
+        // Prefer scrolling to the next section element after hero
+        const sections = Array.from(document.querySelectorAll('main section'));
+        const y = window.scrollY;
+        let targetY = y + window.innerHeight; // fallback: one viewport down
+
+        for (const sec of sections) {
+            const top = sec.getBoundingClientRect().top + window.pageYOffset;
+            if (top > y + 10) { targetY = top - 72; break; }
+        }
+
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+    });
+});

@@ -998,6 +998,148 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     outline-offset: 2px;
 }
 
+/* --------------------------------------------------------------------------
+   Social Sidebar — fixed vertical social icons (right side)
+   -------------------------------------------------------------------------- */
+.social-sidebar {
+    position: fixed;
+    right: clamp(16px, 2.5vw, 28px);
+    /* move the sidebar lower on the page (starts from lower center) */
+    top: 66%;
+    transform: translateY(-50%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    pointer-events: auto;
+}
+
+/* Floating scroll-down button ------------------------------------------- */
+.scroll-down {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) translateY(40px);
+    bottom: 18px; /* start near the bottom */
+    z-index: 10001;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(241, 241, 244, 0.9);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.06);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 30px rgba(230, 230, 234, 0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 320ms cubic-bezier(.2,.9,.2,1), transform 420ms cubic-bezier(.2,.9,.2,1);
+}
+
+.scroll-down.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.scroll-down .chev {
+    font-size: 1.15rem;
+    line-height: 1;
+    display: inline-block;
+    transform: translateY(0);
+    transition: transform 260ms ease;
+}
+
+.scroll-down:active .chev {
+    transform: translateY(4px) scale(0.98);
+}
+
+/* Click ripple effect */
+.scroll-down::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    opacity: 0;
+    transition: transform 420ms ease, opacity 420ms ease;
+}
+
+.scroll-down.ripple::after {
+    transform: translate(-50%,-50%) scale(6);
+    opacity: 1;
+    transition: transform 520ms ease, opacity 520ms ease;
+}
+
+@media (max-width: 640px) {
+    .scroll-down { width: 42px; height: 42px; bottom: 14px; }
+}
+
+.social-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+
+.social-link {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #ffffff; /* white background */
+    color: var(--text-1); /* default icon color (overridden by brand rules below) */
+    text-decoration: none;
+    border: 1px solid rgba(17,24,39,0.06);
+    box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+    transition: transform 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease;
+}
+
+.social-link i { font-size: 18px; color: inherit; }
+
+.social-link:focus-visible { outline: 3px solid rgba(255,255,255,0.08); outline-offset: 4px; }
+
+.social-link:hover, .social-link:focus {
+    transform: translateY(-2px) scale(1.08);
+    filter: none;
+    box-shadow: 0 12px 30px rgba(2,6,23,0.12);
+}
+
+/* brand-colored icons while keeping dark circular background */
+.social-link.linkedin i { color: #0A66C2; }
+.social-link.facebook i { color: #1877F2; }
+.social-link.instagram i { color: #E4405F; }
+.social-link.twitter i { color: #1DA1F2; }
+.social-link.tiktok i { color: #000000; }
+.social-link.github i { color: #111827; }
+.social-link.youtube i { color: #FF0000; }
+
+@media (max-width: 900px) {
+    .social-list { gap: 14px; }
+    .social-link { width: 40px; height: 40px; }
+    .social-link i { font-size: 16px; }
+    .social-sidebar { right: 18px; }
+}
+
+@media (max-width: 480px) {
+    .social-list { gap: 12px; }
+    .social-link { width: 36px; height: 36px; }
+    .social-link i { font-size: 15px; }
+    .social-sidebar { right: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .social-link { transition: none; }
+}
+
 /* ==========================================================================
    Responsive
    ========================================================================== */
